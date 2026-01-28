@@ -20,8 +20,8 @@ import java.util.Map;
 public class XpMonitorService {
 
     private Map<String, Long> cacheHighscore = new HashMap<>();
-    private final String WEBHOOK_URL = "WEBHOOK_DO_DISCORD_AQUI";
-    private final long MINIMO_XP_ALERTA = 70000;
+    private final String WEBHOOK_URL = "https://discord.com/api/webhooks/1464595082287255617/iY6JxlWu0A0YzYoM7v2C7tXYnHImbANB9pdgyu423EnuXt3kN6VHYTCQ7nUCM4WHlbGb";
+    private final long MINIMO_XP_ALERTA = 700000;
 
     @Scheduled(fixedRate = 180000)
     public void executarBot() {
@@ -107,7 +107,7 @@ public class XpMonitorService {
     }
 
     private void enviarRelatorioAgrupado(List<String> rushs) {
-        String urlWebhook = "WEBHOOK_DO_DISCORD_AQUI";
+        String urlWebhook = WEBHOOK_URL;
 
         // 5. Montamos o corpo da mensagem única com todos os nomes
         StringBuilder mensagem = new StringBuilder();
