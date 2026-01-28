@@ -1,0 +1,12 @@
+# Pasta de build e arquivos do IntelliJ
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.idea/
+*.iml
+
+# Log e Arquivos temporários
+*.log
+temp/
+
+# O MAIS IMPORTANTE: Não subir o teu perfil do Chrome (onde estão as tuas sessões)
+PerfilBotXP/
