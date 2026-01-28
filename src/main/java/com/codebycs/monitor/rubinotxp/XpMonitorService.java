@@ -107,25 +107,44 @@ public class XpMonitorService {
     }
 
     private void enviarRelatorioAgrupado(List<String> rushs) {
-        String urlWebhook = WEBHOOK_URL;
+        if (rushs == null || rushs.isEmpty()) return;
 
-        // 5. Montamos o corpo da mensagem única com todos os nomes
+        String urlWebhook = WEBHOOK_URL;
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Título inicial
         StringBuilder mensagem = new StringBuilder();
         mensagem.append("🚀 **RELATÓRIO DAILY RAW - RUBINOT**\n");
         mensagem.append("━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
         for (String r : rushs) {
+            // O limite do Discord é 2000. Usamos 1800 para ter margem de segurança.
+            if (mensagem.length() + r.length() > 1800) {
+                enviarParaDiscord(restTemplate, urlWebhook, mensagem.toString());
+
+                // Reinicia o buffer para a próxima parte do relatório
+                mensagem.setLength(0);
+                mensagem.append("🔹 **Continuação do Relatório...**\n");
+            }
             mensagem.append(r).append("\n\n");
         }
-        mensagem.append("━━━━━━━━━━━━━━━━━━━━━━━━");
 
-        Map<String, String> corpo = new HashMap<>();
-        corpo.put("content", mensagem.toString());
+        // Envia o restante (o que sobrou no StringBuilder)
+        if (mensagem.length() > 0) {
+            mensagem.append("━━━━━━━━━━━━━━━━━━━━━━━━");
+            enviarParaDiscord(restTemplate, urlWebhook, mensagem.toString());
+        }
+    }
 
+    // Método auxiliar para fazer o POST de fato
+    private void enviarParaDiscord(RestTemplate restTemplate, String url, String conteudo) {
         try {
-            new RestTemplate().postForEntity(urlWebhook, corpo, String.class);
-            System.out.println("✅ Relatório agrupado enviado com " + rushs.size() + " jogadores.");
+            Map<String, String> corpo = new HashMap<>();
+            corpo.put("content", conteudo);
+            restTemplate.postForEntity(url, corpo, String.class);
+            System.out.println("✅ Parte do relatório enviada com sucesso.");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao enviar relatório: " + e.getMessage());
+            System.err.println("❌ Erro ao disparar Webhook: " + e.getMessage());
         }
     }
 
