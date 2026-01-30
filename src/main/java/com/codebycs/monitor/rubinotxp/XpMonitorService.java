@@ -84,7 +84,7 @@ public class XpMonitorService {
                         long pontosAntigos = cacheHighscore.get(nome);
                         long ganho = pontosAtuais - pontosAntigos;
 
-                        if (ganho > MINIMO_XP_ALERTA) {
+                        if (ganho >= MINIMO_XP_ALERTA) {
                             // 4. Em vez de enviar agora, montamos a linha e guardamos na lista
                             String ganhoFmt = String.format("%,d", ganho).replace(',', '.');
                             String totalFmt = String.format("%,d", pontosAtuais).replace(',', '.');
@@ -94,12 +94,9 @@ public class XpMonitorService {
                             String linhaFormatada = String.format("⭐ #%d ----- **%s** ----- %s ----- Lvl: %s ----- %s (Subiu +%s Desde a ultima veirifcação)",
                                     rankReal, nome, vocacao, level, totalFmt, ganhoFmt);
                             listaDeRushs.add(linhaFormatada);
-
-                            cacheHighscore.put(nome, pontosAtuais);
                         }
-                    } else {
-                        cacheHighscore.put(nome, pontosAtuais);
                     }
+                        cacheHighscore.put(nome, pontosAtuais);
                 }
             } catch (StaleElementReferenceException e) {
                 continue; }
